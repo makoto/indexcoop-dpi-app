@@ -55,7 +55,8 @@ function App() {
     return({
       dpiValue: parseFloat(d.dpiValue),
       tokenSumValue: parseFloat(d.tokenSumValue),
-      date: moment(parseInt(d.timestamp) * 1000).format("MM Do kk:mm:ss")
+      pctDiff: parseFloat(d.pctDiff),
+      date: moment(parseInt(d.timestamp) * 1000).format("MMM Do kk:mm:ss")
     })
   }).reverse()
   console.log('***1', historyData.length, historyData[0].name, historyData[999].name)
@@ -65,7 +66,8 @@ function App() {
         <p>
           Chart
         </p>
-        <Chart data={historyData} xKey={'date'} yKey0={'dpiValue'} yKey1={'tokenSumValue'} />
+        <Chart data={historyData} xKey={'date'} yKeys={['dpiValue', 'tokenSumValue']} />
+        <Chart data={historyData} xKey={'date'} yKeys={['pctDiff']} brush={true} axis={true} />
       </Body>
     </div>
   );
