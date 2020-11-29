@@ -16,7 +16,7 @@ export const Body = styled.body`
   color: white;
   display: flex;
   flex-direction: column;
-  font-size: calc(10px + 2vmin);
+  // font-size: calc(10px + 2vmin);
   justify-content: center;
   min-height: calc(100vh - 70px);
 `;

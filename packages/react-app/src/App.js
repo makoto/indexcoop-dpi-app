@@ -12,7 +12,7 @@ import GET_TRANSFERS from "./graphql/subgraph";
 import indexEntities from "./data/indexEntities"
 import indexHistories from "./data/indexHistories"
 import Chart from "./components/chart"
-
+import moment from 'moment'
 async function readOnChainData() {
   // Should replace with the end-user wallet, e.g. Metamask
   const defaultProvider = getDefaultProvider();
@@ -42,25 +42,30 @@ function WalletButton({ provider, loadWeb3Modal, logoutOfWeb3Modal }) {
 
 function App() {
   const { loading, error, data } = useQuery(GET_TRANSFERS);
-  const [provider, loadWeb3Modal, logoutOfWeb3Modal] = useWeb3Modal();
-
+  let historyData
   React.useEffect(() => {
     console.log({indexHistories})
+
     if (!loading && !error && data && data.transfers) {
       console.log({ transfers: data.transfers });
     }
   }, [loading, error, data]);
   // 
+  historyData = indexHistories.data.indexHistories.map(d => {
+    return({
+      dpiValue: parseFloat(d.dpiValue),
+      tokenSumValue: parseFloat(d.tokenSumValue),
+      date: moment(parseInt(d.timestamp) * 1000).format("MM Do kk:mm:ss")
+    })
+  }).reverse()
+  console.log('***1', historyData.length, historyData[0].name, historyData[999].name)
   return (
     <div>
-      <Header>
-        <WalletButton provider={provider} loadWeb3Modal={loadWeb3Modal} logoutOfWeb3Modal={logoutOfWeb3Modal} />
-      </Header>
       <Body>
         <p>
           Chart
         </p>
-        <Chart />
+        <Chart data={historyData} xKey={'date'} yKey0={'dpiValue'} yKey1={'tokenSumValue'} />
       </Body>
     </div>
   );
