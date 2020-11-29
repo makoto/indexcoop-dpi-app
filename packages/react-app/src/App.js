@@ -9,6 +9,9 @@ import useWeb3Modal from "./hooks/useWeb3Modal";
 
 import { addresses, abis } from "@project/contracts";
 import GET_TRANSFERS from "./graphql/subgraph";
+import indexEntities from "./data/indexEntities"
+import indexHistories from "./data/indexHistories"
+import Chart from "./components/chart"
 
 async function readOnChainData() {
   // Should replace with the end-user wallet, e.g. Metamask
@@ -42,30 +45,22 @@ function App() {
   const [provider, loadWeb3Modal, logoutOfWeb3Modal] = useWeb3Modal();
 
   React.useEffect(() => {
+    console.log({indexHistories})
     if (!loading && !error && data && data.transfers) {
       console.log({ transfers: data.transfers });
     }
   }, [loading, error, data]);
-
+  // 
   return (
     <div>
       <Header>
         <WalletButton provider={provider} loadWeb3Modal={loadWeb3Modal} logoutOfWeb3Modal={logoutOfWeb3Modal} />
       </Header>
       <Body>
-        <Image src={logo} alt="react-logo" />
         <p>
-          Edit <code>packages/react-app/src/App.js</code> and save to reload.
+          Chart
         </p>
-        {/* Remove the "hidden" prop and open the JavaScript console in the browser to see what this function does */}
-        <Button hidden onClick={() => readOnChainData()}>
-          Read On-Chain Balance
-        </Button>
-        <Link href="https://ethereum.org/developers/#getting-started" style={{ marginTop: "8px" }}>
-          Learn Ethereum
-        </Link>
-        <Link href="https://reactjs.org">Learn React</Link>
-        <Link href="https://thegraph.com/docs/quick-start">Learn The Graph</Link>
+        <Chart />
       </Body>
     </div>
   );

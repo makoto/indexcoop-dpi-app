@@ -12,7 +12,7 @@ export const Header = styled.header`
 
 export const Body = styled.body`
   align-items: center;
-  background-color: #282c34;
+  // background-color: #282c34;
   color: white;
   display: flex;
   flex-direction: column;
