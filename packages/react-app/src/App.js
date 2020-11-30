@@ -59,9 +59,6 @@ function App() {
       num , historyData
     })
   
-
-
-  
     return (
       <>
         <Header>🦉 Index COOP DPI Arbitrage 🦅 opportunity graph 📈 </Header>
