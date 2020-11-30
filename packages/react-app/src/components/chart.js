@@ -19,7 +19,7 @@ export default function(props) {
       syncId="anyId"
     >
       <CartesianGrid strokeDasharray="3 3" />
-      {axis && (<XAxis dataKey={xKey} />)}
+      <XAxis dataKey={xKey} />
       <YAxis domain={['auto', 'auto']}/>
       <Tooltip />
       <Legend />

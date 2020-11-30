@@ -3,9 +3,7 @@ import { Contract } from "@ethersproject/contracts";
 import { getDefaultProvider } from "@ethersproject/providers";
 import { useQuery } from "@apollo/react-hooks";
 
-import { Body, SlideContainer, Slider, Button, Header, Image, Link } from "./components";
-import logo from "./ethereumLogo.png";
-import useWeb3Modal from "./hooks/useWeb3Modal";
+import { Body, SlideContainer, Slider, Container, Header, Link } from "./components";
 
 import { addresses, abis } from "@project/contracts";
 import { GET_INDEX_HISTORIES } from "./graphql/subgraph";
@@ -60,28 +58,42 @@ function App() {
     console.log({
       num , historyData
     })
-    return (
-      <div>
-        { num === 0 ? ('loading') : (
-          <>
-            <SlideContainer>
-              <p>Price Diffrence: { pctDiff } % </p> 
-              <Slider
-                type="range" min="0" max="5" value={pctDiff} class="slider" id="myRange" step="0.1"
-                onChange={inputHandler}
-              />
-              <p>
-                Plotting { num } points btw { historyData[0].date } and { historyData[num - 1].date } 
-              </p>
+  
 
-            </SlideContainer>
-            <Body>
-              <Chart data={historyData} xKey={'date'} yKeys={['dpiValue', 'tokenSumValue']} />
-              <Chart data={historyData} xKey={'date'} yKeys={['pctDiff']} brush={true} axis={true} />
-            </Body>
-          </>
-        ) }
-      </div>
+
+  
+    return (
+      <>
+        <Header>🦉 Index COOP DPI Arbitrage 🦅 opportunity graph 📈 </Header>
+        <Container>
+          <p>
+            This chart is inspired by <Link href="https://github.com/ConcourseOpen/DPI_Arb_Bot_Example">DPI_Arb_Bot_Example</Link>.
+            It takes the underlying token reserve from <Link href="https://etherscan.io/address/0x1494CA1F11D487c2bBe4543E90080AeBa4BA3C2b">Index DPI Token</Link> then sums up the total value and compare with the price of DPI Token itself.
+            <br />
+          </p>
+          <div>
+            { num === 0 ? ('loading') : (
+              <>
+                <SlideContainer>
+                  <p>Price Diffrence: { pctDiff } % </p> 
+                  <Slider
+                    type="range" min="0" max="5" value={pctDiff} class="slider" id="myRange" step="0.1"
+                    onChange={inputHandler}
+                  />
+                  <p>
+                    Plotting { num } points btw { historyData[0].date } and { historyData[num - 1].date } 
+                  </p>
+
+                </SlideContainer>
+                <Body>
+                  <Chart data={historyData} xKey={'date'} yKeys={['dpiValue', 'tokenSumValue']} />
+                  <Chart data={historyData} xKey={'date'} yKeys={['pctDiff']} brush={true} axis={true} />
+                </Body>
+              </>
+            ) }
+          </div>
+        </Container>
+      </>
     );  
   }
 }

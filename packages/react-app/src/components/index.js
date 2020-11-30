@@ -1,19 +1,23 @@
 import styled from "styled-components";
 
+export const Container = styled.div`
+  margin:1em;
+`
+
 export const Header = styled.header`
   background-color: #282c34;
   min-height: 70px;
   display: flex;
   flex-direction: row;
   align-items: center;
-  justify-content: flex-end;
   color: white;
+  font-size: 25px;
 `;
 
 export const Body = styled.body`
   align-items: center;
   // background-color: #282c34;
-  color: white;
+  // color: white;
   display: flex;
   flex-direction: column;
   // font-size: calc(10px + 2vmin);
@@ -55,7 +59,7 @@ export const Button = styled.button`
 
 export const Slider = styled.input`
   -webkit-appearance: none;
-  width: 100%;
+  width: 60%;
   height: 25px;
   background: #d3d3d3;
   outline: none;
