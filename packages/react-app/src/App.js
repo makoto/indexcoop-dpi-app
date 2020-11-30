@@ -1,16 +1,16 @@
-import React from "react";
+import React, { useState } from "react";
 import { Contract } from "@ethersproject/contracts";
 import { getDefaultProvider } from "@ethersproject/providers";
 import { useQuery } from "@apollo/react-hooks";
 
-import { Body, Button, Header, Image, Link } from "./components";
+import { Body, SlideContainer, Slider, Button, Header, Image, Link } from "./components";
 import logo from "./ethereumLogo.png";
 import useWeb3Modal from "./hooks/useWeb3Modal";
 
 import { addresses, abis } from "@project/contracts";
-import GET_TRANSFERS from "./graphql/subgraph";
-import indexEntities from "./data/indexEntities"
-import indexHistories from "./data/indexHistories"
+import { GET_INDEX_HISTORIES } from "./graphql/subgraph";
+// import indexEntities from "./data/indexEntities"
+// import indexHistories from "./data/indexHistories"
 import Chart from "./components/chart"
 import moment from 'moment'
 async function readOnChainData() {
@@ -24,53 +24,66 @@ async function readOnChainData() {
   console.log({ tokenBalance: tokenBalance.toString() });
 }
 
-function WalletButton({ provider, loadWeb3Modal, logoutOfWeb3Modal }) {
-  return (
-    <Button
-      onClick={() => {
-        if (!provider) {
-          loadWeb3Modal();
-        } else {
-          logoutOfWeb3Modal();
-        }
-      }}
-    >
-      {!provider ? "Connect Wallet" : "Disconnect Wallet"}
-    </Button>
-  );
-}
 
 function App() {
-  const { loading, error, data } = useQuery(GET_TRANSFERS);
+  const [ pctDiff, setPctDiff ] = useState('0');
+  console.log({pctDiff})
+  const { loading, error, data  } = useQuery(GET_INDEX_HISTORIES, {
+    variables:{ pctDiff }
+  });
   let historyData
-  React.useEffect(() => {
-    console.log({indexHistories})
+  // React.useEffect(() => {
+  //   console.log({indexHistories})
 
-    if (!loading && !error && data && data.transfers) {
-      console.log({ transfers: data.transfers });
+  //   if (!loading && !error && data && data.transfers) {
+  //     console.log({ transfers: data.transfers });
+  //   }
+  // }, [loading, error, data]);
+  if(error){
+    return(JSON.stringify(error))
+  }else{
+    console.log({data})
+    historyData = (data && data.indexHistories && data.indexHistories.map(d => {
+      return({
+        dpiValue: parseFloat(d.dpiValue),
+        tokenSumValue: parseFloat(d.tokenSumValue),
+        pctDiff: parseFloat(d.pctDiff),
+        date: moment(parseInt(d.timestamp) * 1000).format("MMM Do kk:mm:ss")
+      })
+    }).reverse()) || []
+    const num = historyData.length
+
+    const inputHandler = (e) => {
+      console.log({e})
+      setPctDiff(e.target.value)
     }
-  }, [loading, error, data]);
-  // 
-  historyData = indexHistories.data.indexHistories.map(d => {
-    return({
-      dpiValue: parseFloat(d.dpiValue),
-      tokenSumValue: parseFloat(d.tokenSumValue),
-      pctDiff: parseFloat(d.pctDiff),
-      date: moment(parseInt(d.timestamp) * 1000).format("MMM Do kk:mm:ss")
+    console.log({
+      num , historyData
     })
-  }).reverse()
-  console.log('***1', historyData.length, historyData[0].name, historyData[999].name)
-  return (
-    <div>
-      <Body>
-        <p>
-          Chart
-        </p>
-        <Chart data={historyData} xKey={'date'} yKeys={['dpiValue', 'tokenSumValue']} />
-        <Chart data={historyData} xKey={'date'} yKeys={['pctDiff']} brush={true} axis={true} />
-      </Body>
-    </div>
-  );
+    return (
+      <div>
+        { num === 0 ? ('loading') : (
+          <>
+            <SlideContainer>
+              <p>Price Diffrence: { pctDiff } % </p> 
+              <Slider
+                type="range" min="0" max="2" value={pctDiff} class="slider" id="myRange" step="0.1"
+                onChange={inputHandler}
+              />
+              <p>
+                Plotting { num } points btw { historyData[0].date } and { historyData[num - 1].date } 
+              </p>
+
+            </SlideContainer>
+            <Body>
+              <Chart data={historyData} xKey={'date'} yKeys={['dpiValue', 'tokenSumValue']} />
+              <Chart data={historyData} xKey={'date'} yKeys={['pctDiff']} brush={true} axis={true} />
+            </Body>
+          </>
+        ) }
+      </div>
+    );  
+  }
 }
 
 export default App;
