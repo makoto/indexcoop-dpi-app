@@ -67,7 +67,7 @@ function App() {
             <SlideContainer>
               <p>Price Diffrence: { pctDiff } % </p> 
               <Slider
-                type="range" min="0" max="2" value={pctDiff} class="slider" id="myRange" step="0.1"
+                type="range" min="0" max="5" value={pctDiff} class="slider" id="myRange" step="0.1"
                 onChange={inputHandler}
               />
               <p>
